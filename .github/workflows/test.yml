@@ -1,0 +1,43 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+name: test compile
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout project
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+        path: project
+
+    - name: install python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: checkout esp-idf
+      uses: actions/checkout@v2
+      with:
+        repository: espressif/esp-idf
+        submodules: true
+        path: esp-idf
+        ref: v4.4
+
+    - name: install esp-idf
+      run: |
+        # git clone -b v4.4 --recursive https://github.com/espressif/esp-idf.git
+        cd esp-idf && ./install.sh esp32
+
+    - name: build with esp-idf
+      run: |
+        . ./esp-idf/export.sh
+        cd project
+        idf.py build
+        idf.py clean

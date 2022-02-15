@@ -1,0 +1,3 @@
+[submodule "components/jled"]
+	path = components/jled
+	url = https://github.com/jandelgado/jled
